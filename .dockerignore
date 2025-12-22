@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+Dockerfile
+.git
+.github
+*.md
+# Ignore kubernetes manifests (kept out of Docker build context)
+kubernetes
+kubernetes/**
+README.md
+Dockerfile
+.gitignore
+.dockerignrone

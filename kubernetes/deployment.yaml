@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doswebstation-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doswebstation
+  template:
+    metadata:
+      labels:
+        app: doswebstation
+    spec:
+      containers:
+      - name: doswebstation
+        image: your-dockerhub-username/doswebstation:latest
+        ports:
+        - containerPort: 80
+        # Health Checks
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: game-storage
+          mountPath: /usr/share/nginx/html/games
+      volumes:
+      - name: game-storage
+        hostPath:
+          path: /mnt/data/dos-games 
+          type: Directory

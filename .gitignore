@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.env
+.DS_Store
+npm-debug.log
+/.vscode
+games/doom.jsdos
+games/simcity2.jsdos

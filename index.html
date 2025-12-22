@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOS Webstation</title>
+    <link rel="stylesheet" href="js-dos.css">
+    <script src="js-dos.js"></script>
+
+    <style>
+        body { 
+            background: #0a0a0a; 
+            color: #00ff41; 
+            font-family: 'Courier New', monospace; 
+            display: flex; flex-direction: column; align-items: center; padding: 30px;
+            overflow-x: hidden;
+        }
+
+        h1 { text-shadow: 0 0 10px #00ff41; margin-bottom: 5px; }
+        #status { color: #666; font-size: 0.8em; margin-bottom: 20px; text-transform: uppercase; }
+
+        /* Bigger Window */
+        #dos { 
+            width: 1024px; 
+            height: 768px; 
+            border: 2px solid #333; 
+            background: #000;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
+        }
+
+        .dock {
+            background: #111;
+            padding: 15px 30px;
+            border-radius: 4px;
+            border: 1px solid #222;
+            margin-bottom: 15px;
+            display: flex; gap: 20px; align-items: center;
+        }
+
+        select {
+            background: #000; color: #00ff41; border: 1px solid #00ff41;
+            padding: 8px; font-family: monospace; outline: none;
+        }
+
+        .btn { 
+            background: #00ff41; color: #000; border: none; 
+            padding: 10px 20px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn:disabled { background: #004411; cursor: not-allowed; }
+        .btn:hover:not(:disabled) { background: #fff; }
+
+        /* Nuke default JS-DOS UI branding and sidebars */
+        .sidebar-header, .sidebar-content, .sidebar-footer, 
+        .emulator-options, .emulator-button, .emulator-keyboard { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <h1>[ DOS Webstation ]</h1>
+    <div id="status">Initializing Terminal...</div>
+
+    <div class="dock">
+        <select id="game-selector">
+            <option value="">-- SELECT CARTRIDGE --</option>
+        </select>
+        <button id="start-btn" class="btn" disabled>MOUNT & RUN</button>
+    </div>
+
+    <div id="dos"></div>
+
+    <script>
+        const status = document.getElementById("status");
+        const selector = document.getElementById("game-selector");
+        const startBtn = document.getElementById("start-btn");
+
+
+        const originalWindowOpen = window.open;
+        window.open = function(url, target) {
+            if (typeof url === "string" && (url.includes("discord.com") || url.includes("t.me") || url.includes("twitter.com"))) {
+                return null;
+            }
+            return originalWindowOpen(url, target);
+        };
+
+        fetch('games/manifest.json')
+            .then(res => res.json())
+            .then(data => {
+                data.games.forEach(game => {
+                    const opt = document.createElement("option");
+                    opt.value = "games/" + game.file;
+                    opt.textContent = game.title.toUpperCase();
+                    selector.appendChild(opt);
+                });
+                status.textContent = "READY: " + data.games.length + " Titles Scanned";
+            })
+            .catch(() => status.textContent = "FATAL: Manifest not found");
+
+        selector.onchange = () => startBtn.disabled = !selector.value;
+
+        startBtn.onclick = () => {
+            const gamePath = selector.value;
+            startBtn.style.display = "none";
+            selector.style.display = "none";
+            status.textContent = "BOOTING " + gamePath.split('/').pop().toUpperCase() + "...";
+            
+            Dos(document.getElementById("dos"), {
+                wdosboxJs: "wdosbox.js",
+                noUi: true,
+                noControls: true
+            })
+            .run(gamePath)
+            .then((ci) => {
+                status.textContent = "SYSTEM ACTIVE";
+                
+                // Sound unlock (standard browser requirement)
+                window.addEventListener('mousedown', () => {
+                    if (ci.audioContext) ci.audioContext.resume();
+                }, { once: true });
+            });
+        };
+
+    
+    </script>
+</body>
+</html>

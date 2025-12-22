@@ -1,0 +1,12 @@
+{
+  "games": [
+    { 
+      "title": "SimCity 2000", 
+      "file": "simcity2.jsdos" 
+    },
+    { 
+      "title": "Doom 1993", 
+      "file": "doom.jsdos" 
+    }
+  ]
+}
