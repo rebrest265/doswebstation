@@ -3,7 +3,7 @@ name: Build Multi-Arch DOS Webstation
 on:
   push:
     branches: [ "main" ]
-  # This enables the "Run Workflow" button in the GitHub UI
+
   workflow_dispatch:
     inputs:
       build_reason:
@@ -41,6 +41,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.actor }}/dos-webstation:latest
-          # This helps clear the cache for a truly "on-demand" fresh build
+          tags: ghcr.io/${{ github.actor }}/{{ github.repository }}:latest
           no-cache: ${{ github.event_name == 'workflow_dispatch' }}
