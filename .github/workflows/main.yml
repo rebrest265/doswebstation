@@ -3,7 +3,13 @@ name: Build Multi-Arch DOS Webstation
 on:
   push:
     branches: [ "main" ]
+  # This enables the "Run Workflow" button in the GitHub UI
   workflow_dispatch:
+    inputs:
+      build_reason:
+        description: 'Reason for manual build'
+        required: false
+        default: 'Manual update'
 
 jobs:
   build-and-push:
@@ -16,11 +22,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Set up QEMU to allow building ARM on x86 runners
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      # Set up Docker Buildx for multi-platform support
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,9 +39,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # This builds for standard PC (amd64) and Raspberry Pi 4/5 (arm64)
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: ghcr.io/${{ github.actor }}/dos-webstation:latest
+          # This helps clear the cache for a truly "on-demand" fresh build
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
