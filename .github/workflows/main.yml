@@ -1,9 +1,6 @@
 name: Build Multi-Arch DOS Webstation
 
 on:
-  push:
-    branches: [ "main" ]
-
   workflow_dispatch:
     inputs:
       build_reason:
