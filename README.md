@@ -17,7 +17,7 @@ Originally created for private use, this project is now shared as an all-in-one,
 3. **Access the station:**
    Open your browser and navigate to `http://localhost:8080`.
 
-* Prebuilt [docker image](http://localhost)
+* Prebuilt docker image is available in releases. You can built your own with github actions if needed.
 
 ## Quick Start
 1. Place .jsdos game bundles in the /games directory.
