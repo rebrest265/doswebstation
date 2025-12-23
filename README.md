@@ -1,6 +1,6 @@
 # [ The DOS WEBSTATION ]
 
-**DOS Webstation** is a lightweight web terminal for DOS gaming. It serves as a tiny local interface for DOS Wasm X, offering a environment to host and play a personal library of MS-DOS titles directly in any modern web browser
+**DOS Webstation** is a web terminal for DOS gaming. It serves as a tiny local interface for DOS Wasm X, offering a environment to host and play a personal library of MS-DOS titles directly in any modern web browser
 
 Originally created for private use, this project is now shared as a prebuilt solution for retro gaming enthusiasts. It provides a "plug-and-play" bridge to the **DOS Wasm X** engine, featuring a modified UI and an loading system to access game libary from multiple places.
 
