@@ -8,7 +8,7 @@ This directory contains the manifests required to run the DOS Webstation in a K8
 2. Push to Registry:
    `docker push your-username/doswebstation:latest`
 3. Configure HostPath:
-   Edit deployment.yaml and update the volumes.hostPath.path to the physical location of the /games folder on the worker node.
+   Edit deployment.yaml and update the volumes.hostPath.path to the physical location of the /games directory on the worker node.
 4. Deploy:
    `kubectl apply -f deployment.yaml`
    `kubectl apply -f service.yaml`
