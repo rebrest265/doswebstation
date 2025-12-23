@@ -15,7 +15,7 @@ spec:
       containers:
       - name: doswebstation
         image: your-dockerhub-username/doswebstation:latest
-        imagePullPolicy: always
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         # Health Checks
