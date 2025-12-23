@@ -1,6 +1,6 @@
 # Game Repository
 
-This folder serves as the persistent storage for the game library.
+This directory serves as the persistent storage for the game library.
 
 ## Adding Games
 1. Prepare the Bundle: Ensure the game is packed as a zip file.
