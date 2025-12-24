@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: doswebstation-deployment
+  name: doswebstation
 spec:
   replicas: 1
   selector:
@@ -34,9 +34,14 @@ spec:
         - name: game-storage
           mountPath: /usr/share/nginx/html/games
         - name: settings-configuration
-          mountPath: /usr/share/nginx/html/
+          mountPath: /usr/share/nginx/html/settings.js
+          subPath: settings.js
+        - name: settings-configuration
+          mountPath: /usr/share/nginx/html/dosbox-x-for-web.conf
+          subPath: dosbox-x-for-web.conf
         - name: romlist
-          mountPath: /usr/share/nginx/html/games
+          mountPath: /usr/share/nginx/html/games/romlist.js
+          subPath: romlist.js
         resources:
           requests:
             cpu: "200m"
