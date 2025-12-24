@@ -14,11 +14,10 @@ spec:
     spec:
       containers:
       - name: doswebstation
-        image: your-dockerhub-username/doswebstation:latest
+        image: ghcr.io/rebrest265/rebrest265/doswebstation:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-        # Health Checks
         livenessProbe:
           httpGet:
             path: /index.html
@@ -34,8 +33,25 @@ spec:
         volumeMounts:
         - name: game-storage
           mountPath: /usr/share/nginx/html/games
+        - name: settings-configuration
+          mountPath: /usr/share/nginx/html/
+        - name: romlist
+          mountPath: /usr/share/nginx/html/games
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "128Mi"
+          limits:
+            cpu: "2"
+            memory: "1Gi"
       volumes:
       - name: game-storage
         hostPath:
           path: /mnt/data/dos-games 
           type: Directory
+      - name: settings-configuration
+        configMap:
+          name: settingsmap
+      - name: romlist
+        configMap:
+          name: romlistmap

@@ -179,7 +179,14 @@
                     </select>
                     <button class="btn btn-primary" style="margin-top: 10px;" onclick="launchSelectedGame()">LAUNCH GAME FROM LIST</button>
                 </div>
-  
+
+              
+                <div id="progressContainer" style="display: none; width: 300px; margin: 20px auto;">
+                    <div style="color: #00ff41; margin-bottom: 5px; font-size: 12px;">DOWNLOADING: <span id="progressPercent">0%</span></div>
+                     <div style="width: 100%; border: 1px solid #00ff41; height: 10px; background: #000;">
+                     <div id="progressBar" style="width: 0%; height: 100%; background: #00ff41; box-shadow: 0 0 8px #00ff41;"></div>
+                    </div>
+                </div>
         
                 <input id="file-upload" type="file" multiple />
         
@@ -664,28 +671,72 @@
         }
     }
 
-    async function launchSelectedGame() {
-        const select = document.getElementById('romselect');
-        const url = select.value;
-        if (!url) return alert("Please select a game first!");
+async function launchSelectedGame() {
+    const select = document.getElementById('romselect');
+    const url = select.value;
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
 
-        try {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const filename = url.split('/').pop();
-            const file = new File([blob], filename);
-
-            const fileInput = document.getElementById('file-upload'); 
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-
-        } catch (err) {
-            console.error("Injection failed:", err);
-        }
+    if (!url) {
+        alert("Please select a game first!");
+        return;
     }
+
+    try {
+        // Show progress bar
+        progressContainer.style.display = 'block';
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("File not found");
+
+        // Get total size to calculate percentage
+        const contentLength = response.headers.get('content-length');
+        const total = parseInt(contentLength, 10);
+        let loaded = 0;
+
+        // Use a reader to track progress
+        const reader = response.body.getReader();
+        const chunks = [];
+
+        while(true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+            
+            chunks.push(value);
+            loaded += value.length;
+
+            if (total) {
+                const percent = Math.round((loaded / total) * 100);
+                progressBar.style.width = percent + '%';
+                progressPercent.innerText = percent + '%';
+            }
+        }
+
+        // Combine chunks into a single blob
+        const blob = new Blob(chunks);
+        const filename = url.split('/').pop();
+        const file = new File([blob], filename);
+
+        // Inject into emulator
+        const fileInput = document.getElementById('file-upload'); 
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // Hide progress and UI once loaded
+        setTimeout(() => {
+            progressContainer.style.display = 'none';
+           // document.getElementById('topPanel').style.display = 'none';
+        }, 500);
+
+    } catch (err) {
+        console.error("Download failed:", err);
+        alert("Error downloading game. Check console.");
+        progressContainer.style.display = 'none';
+    }
+}
 </script>
 </body>
 
