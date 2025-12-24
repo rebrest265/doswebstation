@@ -12,6 +12,8 @@ This directory contains the manifests required to run the DOS Webstation in a K8
 4. Deploy:
    `kubectl apply -f deployment.yaml`
    `kubectl apply -f service.yaml`
+   `kubectl apply -f romlistmap.yaml`
+   `kubectl apply -f settingsmap.yaml`
 
 ## Architecture
 * Deployment: Runs the Nginx container serving the static engine.
